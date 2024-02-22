@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment # Kubernetes resource kind we are creating
 metadata:
-  name: paymentoptions-deployment
+  name: payapp-starlight-deployment
 spec:
   selector:
     matchLabels:
-      app: paymentoptions
+      app: payapp-starlight
   replicas: 1 # Number of replicas that will be created for this deployment
   template:
     metadata:
       labels:
-        app: paymentoptions
+        app: payapp-starlight
     spec:
       containers:
         - name: spring-boot-k8s
-          image: mustafamirza/paymentoptions # Image that will be used to containers in the cluster
+          image: mustafamirza/payapp-starlight # Image that will be used to containers in the cluster
           imagePullPolicy: Always
           env:
           - name: orch_ip
@@ -30,7 +30,7 @@ spec:
           - name: enable_avocado
             value: "true"
           - name: AVCD_SERVICE_TAG
-            value: paymentservice
+            value: payapp-starlight
           name: log4j-debian10-root-3x1-m-web-container
           ports:
             - containerPort: 8080 # The port that the container is running on in the cluster
@@ -41,10 +41,10 @@ spec:
 apiVersion: v1 # Kubernetes API version
 kind: Service # Kubernetes resource kind we are creating
 metadata: # Metadata of the resource kind we are creating
-  name: paymentoptions-samplesvc
+  name: payapp-starlight-samplesvc
 spec:
   selector:
-    app: paymentoptions
+    app: payapp-starlight
   ports:
     - protocol: "TCP"
       port: 8080 # The port that the service is running on in the cluster
