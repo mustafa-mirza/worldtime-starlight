@@ -6,14 +6,14 @@ pipeline {
     stages{
         stage('Build Maven'){
             steps{
-                checkout([$class: 'GitSCM', branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/mustafa-mirza/paymentOptions']]])
+                checkout([$class: 'GitSCM', branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/mustafa-mirza/payapp-starlight']]])
                 sh 'mvn clean install'
             }
         }
         stage('Build docker image'){
             steps{
                 script{
-                    sh 'docker build -t mustafamirza/paymentoptions .'
+                    sh 'docker build -t mustafamirza/payapp-starlight .'
                 }
             }
         }
@@ -24,7 +24,7 @@ pipeline {
                    sh 'docker login -u mustafamirza -p ${dockerhubpwd}'
 
 }
-                   sh 'docker push mustafamirza/paymentoptions'
+                   sh 'docker push mustafamirza/payapp-starlight'
                 }
             }
         }
@@ -76,8 +76,8 @@ pipeline {
          stage('Generate Report'){
             steps{
                 script{
-                    sh 'python3 reportGenerator.py --fromdate "2024-01-15 00:00:01" --domain cubecode --subdomain dev_2111 --reportType application_model_architecture'
-                    sh 'python3 reportGenerator.py --fromdate "2024-01-15 00:00:01" --domain cubecode --subdomain dev_2111 --reportType application_model_threat_dragon_plus'
+                    sh 'python3 reportGenerator.py --fromdate "2024-02-23 00:00:01" --domain cubecode --subdomain dev_2111 --reportType application_model_architecture'
+                    sh 'python3 reportGenerator.py --fromdate "2024-02-23 00:00:01" --domain cubecode --subdomain dev_2111 --reportType application_model_threat_dragon_plus'
                 }
             }
         }
