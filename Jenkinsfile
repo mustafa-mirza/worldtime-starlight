@@ -40,7 +40,7 @@ pipeline {
         stage('Access First URL') {
             steps {
                 script {
-                    def firstUrl = 'http://192.168.103.101:5000'
+                    def firstUrl = 'http://192.168.103.101:50001'
                     sh "curl -sS $firstUrl"
                 }
             }
