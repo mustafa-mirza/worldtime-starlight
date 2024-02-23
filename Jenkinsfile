@@ -6,14 +6,14 @@ pipeline {
     stages{
         stage('Build Maven'){
             steps{
-                checkout([$class: 'GitSCM', branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/mustafa-mirza/payapp-starlight']]])
+                checkout([$class: 'GitSCM', branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/mustafa-mirza/worldtime-starlight']]])
                 sh 'mvn clean install'
             }
         }
         stage('Build docker image'){
             steps{
                 script{
-                    sh 'docker build -t mustafamirza/payapp-starlight .'
+                    sh 'docker build -t mustafamirza/worldtime .'
                 }
             }
         }
@@ -24,7 +24,7 @@ pipeline {
                    sh 'docker login -u mustafamirza -p ${dockerhubpwd}'
 
 }
-                   sh 'docker push mustafamirza/payapp-starlight'
+                   sh 'docker push mustafamirza/worldtime'
                 }
             }
         }
@@ -40,7 +40,7 @@ pipeline {
         stage('Access First URL') {
             steps {
                 script {
-                    def firstUrl = 'http://192.168.103.101:30001'
+                    def firstUrl = 'http://192.168.103.101:5000'
                     sh "curl -sS $firstUrl"
                 }
             }
