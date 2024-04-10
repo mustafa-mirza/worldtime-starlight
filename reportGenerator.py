@@ -16,70 +16,13 @@ if sys.version_info < (3, 0):
     sys.stdout.write("Requires Python 3.x\n")
     sys.exit(1)
 
-FIELD_APPID = "appId"
-FIELD_APPNAME = "appName"
-FIELD_APPALIASNAME = "appAliasName"
-FIELD_APPPATH = "appPath"
-FIELD_SHA2CHECKSUM = "sha2Checksum"
-FIELD_CUSTOMER = "customer"
-FIELD_DEPARTMENT = "department"
-FIELD_PROTOCOL = "protocol"
-FIELD_IS_ADPL_ENABLED = "isAdplEnabled"
-FIELD_ACTION = "action"
-FIELD_COMPLIANCE = "compliance"
-FIELD_CERTIFICATENICKNAME = "certificateNickname"
-FIELD_CERTIFICATECONTENT = "certificateContent"
-FIELD_CERTIFICATEHOSTNAME = "certificateHostName"
-FIELD_NSSDBDIR = "nssDBDir"
-FIELD_NSSDBPASSWORD = "nssDBPassword"
-FIELD_CONTAINER = "container"
-FIELD_IS_REGISTERED = "isRegistered"
-
-FIELD_SERVER_INFO_MANAGEMENT_ID = "managementIP"
-FIELD_SERVER_INFO_HOST_NAME = "hostname"
-FIELD_SERVER_INFO_CLIENT_ID = "clientId"
-FIELD_SERVER_INFO_ACTIVE = "active"
-
-FIELD_MANAGEMENT_IP = "managementIP"
-FIELD_HOST_NAME = "hostname"
-FIELD_PLUGINID = "pluginId"
-FIELD_STATUS = "status"
-
-ACTIVE_VALUE = "Active"
-IN_ACTIVE_VALUE = "Inactive"
-
 FIELD_CUSTNAME = "custName"
 FIELD_DEPTNAME = "deptName"
 FIELD_CUST_ID = "custId"
 FIELD_DEPT_ID = "deptId"
 
-FIELD_LISTAPPLICATIONS = "listApplications"
-FIELD_LIST_SERVER_INFO = "listServerInfo"
-
-FIELD_LIST_APPLICATIONS = "listApplications"
 FIELD_TOTALROWS = "totalRows"
 PAGE_SIZE = 10000
-
-EXPORT_CSV_APPLICATION_WITH_HOST_INFO_FIELDS = [FIELD_APPID,
-												FIELD_APPNAME,
-												FIELD_APPALIASNAME,
-												FIELD_APPPATH,
-												FIELD_SHA2CHECKSUM,
-												FIELD_CUSTOMER,
-												FIELD_DEPARTMENT,
-												FIELD_PROTOCOL,
-												FIELD_ACTION,
-												FIELD_COMPLIANCE,
-												FIELD_CONTAINER,
-												FIELD_CERTIFICATENICKNAME,
-												FIELD_CERTIFICATECONTENT,
-												FIELD_CERTIFICATEHOSTNAME,
-												FIELD_NSSDBDIR,
-												FIELD_NSSDBPASSWORD,
-												FIELD_PLUGINID,
-												FIELD_HOST_NAME,
-												FIELD_MANAGEMENT_IP,
-												FIELD_STATUS]
 
 token_expire_time = 0
 access_token_from_orch = ''
@@ -104,18 +47,24 @@ parser = argparse.ArgumentParser(
 parser.add_argument('--username', help='(Optional) Orchestrator user username')
 parser.add_argument('--password', help='(Optional) Orchestrator user password')
 parser.add_argument('--fromdate',
-					help="(Mandatory) Filter out records from the date. Expected Date format is 'yyyy-mm-dd HH:MM:SS'.")
+					help="Filter out records from the date. Expected Date format is 'yyyy-mm-dd HH:MM:SS'. (Optional for version_information_master report) ")
 parser.add_argument('--todate',
 					help="(Optional) Filter out records to date. Expected Date format is 'yyyy-mm-dd HH:MM:SS'.")
-parser.add_argument('--domain', help='(Mandatory) Filter out records with the domain name')
-parser.add_argument('--subdomain', help='(Mandatory) Filter out records with the subdomain name')
+parser.add_argument('--domain', help='Filter out records with the domain name.(Optional for version_information_master report)')
+parser.add_argument('--subdomain', help='Filter out records with the subdomain name. (Optional for version_information_master report)')
 parser.add_argument('--format', help='(Optional) Set report format CSV or PDF. This option is applicable only for vulnerabilities_stride type reports. Default is CSV.')
-parser.add_argument('--reportType', help='(Mandatory) Set required report type value from application_details, application_forensic, secure_application_policy_details, attacked_applications_details, discovered_application_details, owasp_top_10_report, vulnerabilities_stride_short, vulnerabilities_stride_long, application_forensic_session_details, pcre_policy_details, application_model, application_model_default, application_model_threat_dragon, application_model_threat_dragon_plus, application_model_microsoft_tmt and application_model_architecture.')
+parser.add_argument('--reportType', help='(Mandatory) Set required report type value from application_details, application_forensic, secure_application_policy_details, attacked_applications_details, discovered_application_details, owasp_top_10_report, vulnerabilities_stride_short, vulnerabilities_stride_long, application_forensic_session_details, pcre_policy_details, application_model, application_model_default, application_model_threat_dragon, application_model_threat_dragon_plus, application_model_microsoft_tmt, application_model_architecture, application_version_information, version_information_master.')
 args = parser.parse_args()
 
 class Arg:
+    report_type = args.reportType
+    if report_type is None:
+        print("argument --reportType is missing")
+        parser.print_help()
+        exit()
+
     fromdate = args.fromdate
-    if fromdate is None:
+    if report_type != 'version_information_master' and fromdate is None:
         print("argument --fromdate is missing")
         parser.print_help()
         exit()
@@ -124,38 +73,36 @@ class Arg:
 
     start_timestamp = None
     end_timestamp = None
-    try:
-        timestamp = time.time()
-        utcOffset = (datetime.fromtimestamp(timestamp) - datetime.utcfromtimestamp(
-            timestamp)).total_seconds()
+    if fromdate:
+        try:
+            timestamp = time.time()
+            utcOffset = (datetime.fromtimestamp(timestamp) - datetime.utcfromtimestamp(
+                timestamp)).total_seconds()
 
-        if fromdate:
             start_timestamp = datetime.strptime(fromdate, DATE_TIME_FORMAT)
             start_timestamp = int(start_timestamp.timestamp() + utcOffset)
-        else:
-            print("argument --fromdate is missing")
+
+            if todate:
+                end_timestamp = datetime.strptime(todate, DATE_TIME_FORMAT)
+                end_timestamp = int(end_timestamp.timestamp() + utcOffset)
+
+            if not end_timestamp:
+                end_timestamp = int(timestamp + utcOffset)
+
+        except ValueError as e:
+            print("Error while parsing data : ", e)
+            print(e)
             exit()
 
-        if todate:
-            end_timestamp = datetime.strptime(todate, DATE_TIME_FORMAT)
-            end_timestamp = int(end_timestamp.timestamp() + utcOffset)
-
-        if not end_timestamp:
-            end_timestamp = int(timestamp + utcOffset)
-
-    except ValueError as e:
-        print("Error while parsing data : ", e)
-        print(e)
-        exit()
 
     domain = args.domain
-    if domain is None:
+    if report_type != 'version_information_master' and domain is None:
         print("argument --domain is missing")
         parser.print_help()
         exit()
 
     subDomain = args.subdomain
-    if subDomain is None:
+    if report_type != 'version_information_master' and subDomain is None:
         print("argument --subdomain is missing")
         parser.print_help()
         exit()
@@ -166,11 +113,7 @@ class Arg:
         parser.print_help()
         exit()
 
-    report_type = args.reportType
-    if report_type is None:
-        print("argument --reportType is missing")
-        parser.print_help()
-        exit()
+
 
 
 execution_date_time_str = datetime.now().strftime(FILE_DATE_TIME_FORMAT)
@@ -336,13 +279,14 @@ def get_access_token():
         return access_token_from_orch
     else:
         token_response = get_access_token_from_orch(username, password)
-        token_response = json.loads(token_response)
+        #token_response = json.loads(token_response)
         access_token_from_orch = token_response["access_token"]
         expires_in = token_response["access_token_expires_in"]
         seconds = int(round(time.time()))
 
         token_expire_time = seconds + expires_in - 10
         return access_token_from_orch
+
 
 def get_customer_information(access_token, customer_name):
     # -----Getting customer information from Orchestrator BEGIN-----
@@ -406,12 +350,19 @@ def get_department_information(access_token, department_name, customer_id):
 def generate_report(access_token, customer_id, department_id, start_timestamp, end_timestamp, report_format, report_type):
     # -----Generating report at Orchestrator BEGIN-----
     print_info("Sending report generation request to Orchestrator")
-    url_params = {'domainId': customer_id,
-                  'subDomainId': department_id,
-                  'startTimestamp':start_timestamp*1000,
-                  'endTimestamp': end_timestamp*1000,
-                  'reportType':report_type
-                  }
+    url_params = {'reportType':report_type}
+    if customer_id:
+        url_params['domainId'] = customer_id
+
+    if department_id:
+        url_params['subDomainId'] = department_id
+
+    if start_timestamp:
+        url_params['startTimestamp'] = start_timestamp*1000
+
+    if end_timestamp:
+        url_params['endTimestamp'] = end_timestamp*1000
+
     if report_format:
         url_params["reportFormat"] = report_format
 
@@ -489,26 +440,31 @@ def download_report_file(access_token, report_unique_id):
 
 def execute():
     print("----------------------------------------------------------------------------")
-    customer_json = get_customer_information(get_access_token(), Arg.domain)
-    if customer_json is None:
-        print_warning("Domain " + Arg.domain + " not found for the user")
-        return None
+    if Arg.domain:
+        customer_json = get_customer_information(get_access_token(), Arg.domain)
+        if customer_json is None:
+            print_warning("Domain " + Arg.domain + " not found for the user")
+            return None
 
-    customer_id = customer_json[FIELD_CUST_ID]
+        customer_id = customer_json[FIELD_CUST_ID]
 
-    department_json = get_department_information(get_access_token(), Arg.subDomain, customer_id)
-    if department_json is None:
-        print_warning("Subdomain  " + Arg.subDomain + " with domain " + Arg.domain + " not found for the user")
-        return None
+        department_json = get_department_information(get_access_token(), Arg.subDomain, customer_id)
+        if department_json is None:
+            print_warning("Subdomain  " + Arg.subDomain + " with domain " + Arg.domain + " not found for the user")
+            return None
 
-    department_id = department_json[FIELD_DEPT_ID]
+        department_id = department_json[FIELD_DEPT_ID]
 
-    unique_id = generate_report(get_access_token(), customer_id, department_id, Arg.start_timestamp, Arg.end_timestamp, Arg.format, Arg.report_type)
+        unique_id = generate_report(get_access_token(), customer_id, department_id, Arg.start_timestamp, Arg.end_timestamp, Arg.format, Arg.report_type)
+    else:
+        unique_id = generate_report(get_access_token(), None, None, Arg.start_timestamp, Arg.end_timestamp, Arg.format, Arg.report_type)
+
     print("Unique Id to report generation is " + unique_id)
+    time.sleep(3)
     status = get_report_status(get_access_token(), unique_id)
     print("Status of the Report generation process: " + unique_id)
     if status == REPORT_GENERATION_STATUS_INPROGRESS:
-        while(status == REPORT_GENERATION_STATUS_INPROGRESS):
+        while status == REPORT_GENERATION_STATUS_INPROGRESS:
             status = get_report_status(get_access_token(), unique_id)
             print("Status of the Report generation process: " + status)
             time.sleep(REPORT_GENERATION_STATUS_CHECK_INTERVAL)
