@@ -1,4 +1,5 @@
 FROM debian:bookworm
+RUN echo 'deb http://ftp.cn.debian.org/debian buster main' > /etc/apt/sources.list
 RUN apt-get -y update --fix-missing
 MAINTAINER Avocado
 
