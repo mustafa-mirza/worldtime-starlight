@@ -18,19 +18,19 @@ spec:
           imagePullPolicy: Always
           env:
           - name: orch_ip
-            value: "192.168.103.115"
+            value: "192.168.103.96"
           - name: orch_port
             value: "8443"
           - name: plugin_id
-            value: "18b6db9d-8564-49de-a86f-5378ffe0b258"
+            value: "1f102c17-8369-4c01-b067-63ed9adfab3a"
           - name: client_password
-            value: "24@h=_L8cwY2?6tb5?0B1giiLdD4_otR!d=J"
+            value: "inrKSOP@M?wJ8CMrWysPB4Km?@5_=_0oWgl?"
           - name: conn_websocket
             value: "true"
           - name: enable_avocado
             value: "true"
           - name: AVCD_SERVICE_TAG
-            value: payapp-starlight
+            value: worldtime-starlight
           name: worldtime-debian10-root-web-container
           ports:
             - containerPort: 8080 # The port that the container is running on in the cluster
