@@ -10,5 +10,5 @@ CA_FILE = avocadoCA.cer
 
 #Set USERNAME PASSWORD with Orchestrator user username and password having permission to perform requested operations and uncomment it.
 #If not set, script will refer --username and --password from command arguments or if command arguments are not provided, it will prompt to enter Orchestrator username and password while running script.
-USERNAME = administrator
-PASSWORD = $ecure@Av19
+USERNAME = user07@mustafabaig2023outlook.onmicrosoft.com
+PASSWORD = wuLS1qjWek9gZYtq
