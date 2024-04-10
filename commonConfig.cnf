@@ -1,6 +1,6 @@
 [Orchestrator]
 #Set ORCH_IP with Orchestrator host IP
-ORCH_IP = 192.168.103.115
+ORCH_IP = 192.168.103.96
 
 #Set ORCH_URL with Orchestrator url 
 ORCH_URL = https://orchestrator:8443/orchestrator
