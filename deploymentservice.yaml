@@ -31,7 +31,7 @@ spec:
             value: "true"
           - name: AVCD_SERVICE_TAG
             value: worldtime-starlight
-          name: worldtime-debian10-root-web-container
+          name: worldtime-debian12-root-web-container
           ports:
             - containerPort: 8080 # The port that the container is running on in the cluster
 
