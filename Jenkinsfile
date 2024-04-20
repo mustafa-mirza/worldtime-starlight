@@ -49,9 +49,9 @@ pipeline {
          stage('Generate Report'){
             steps{
                 script{
-                    sh 'python3 reportGenerator.py --fromdate "2024-03-23 00:00:01" --domain k8s --subdomain dev_applications --reportType application_model_architecture'
-                   // sh 'python3 reportGenerator.py --fromdate "2024-02-23 00:00:01" --domain k8s --subdomain dev_applications --reportType application_model_threat_dragon_plus'
-		    sh 'python3 reportGenerator.py --fromdate "2024-03-28 00:00:01" --domain k8s --subdomain dev_applications --reportType application_model_threat_dragon_plus --templateName k8s-Template'
+                    sh 'python3 reportGenerator.py --fromdate "2024-04-20 00:00:01" --domain k8s --subdomain dev_applications --reportType application_model_architecture'
+                    sh 'python3 reportGenerator.py --fromdate "2024-04-20 00:00:01" --domain k8s --subdomain dev_applications --reportType application_model_threat_dragon_plus'
+		    sh 'python3 reportGenerator.py --fromdate "2024-04-20 00:00:01" --domain k8s --subdomain dev_applications --reportType application_model_threat_dragon --templateName k8s-Template'
                 }
             }
         }
