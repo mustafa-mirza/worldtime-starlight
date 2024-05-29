@@ -17,17 +17,27 @@ spec:
           image: mustafamirza/worldtime # Image that will be used to containers in the cluster
           imagePullPolicy: Always
           env:
-          - name: orch_ip
+          - name: ORCH_IP
             value: "192.168.103.96"
-          - name: orch_port
+          - name: ORCH_PORT
             value: "8443"
-          - name: plugin_id
+          - name: PLUGIN_ID
             value: "1f102c17-8369-4c01-b067-63ed9adfab3a"
-          - name: client_password
+          - name: CLIENT_PASSWORD
             value: "inrKSOP@M?wJ8CMrWysPB4Km?@5_=_0oWgl?"
-          - name: conn_websocket
+          - name: CONN_WEBSOCKET
             value: "true"
-          - name: enable_avocado
+          - name: ENABLE_AVOCADO
+            value: "true"
+          - name: ENABLE_VE
+            value: "true"
+          - name: LOCAL_DB_FILE
+            value: ".avocado.db"
+          - name: PARSING_LEVEL
+            value: "2"
+          - name: VE_DATA-EXPIRY_IN_MINUTES
+            value: "1440"
+          - name: DEBUG_LOGS
             value: "true"
           #- name: AVCD_METADATA_FILENAME
             #value: "/metadata.json"
