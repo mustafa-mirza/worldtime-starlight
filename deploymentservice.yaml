@@ -39,8 +39,8 @@ spec:
             value: "1440"
           - name: DEBUG_LOGS
             value: "true"
-          #- name: AVCD_METADATA_FILENAME
-            #value: "/metadata.json"
+          - name: AVCD_METADATA_FILENAME
+            value: "/metadata1.json"
           - name: AVCD_SERVICE_TAG
             value: worldtime-starlight
           name: worldtime-debian12-root-web-container
