@@ -51,7 +51,7 @@ pipeline {
                 script{
                     sh 'python3 reportGenerator.py --fromdate "2024-05-30 00:00:01" --domain k8s --subdomain dev_applications --reportType application_model_architecture'
                     // sh 'python3 reportGenerator.py --fromdate "2024-04-20 00:00:01" --domain k8s --subdomain dev_applications --reportType application_model_threat_dragon_plus'
-		    sh 'python3 reportGenerator.py --fromdate "2024-05-30 14:00:00" --todate "2024-05-30 16:00:00" --domain k8s --subdomain k8s --reportType application_model_threat_dragon --templateName k8s_template1 --metadataFilter 'PR:0834e79e-baa6''
+		    sh 'python3 reportGenerator.py --fromdate "2024-05-30 14:00:00" --todate "2024-05-30 16:00:00" --domain k8s --subdomain k8s --reportType application_model_threat_dragon --templateName k8s_template1 --metadataFilter "PR:0834e79e-baa6"'
                 }
             }
         }
