@@ -22,7 +22,7 @@ RUN apt-get install -y /avcdadpl_3.1.74.debian12_amd64.deb
 
 RUN /opt/avcd/bin/avocado container-enable
 ENTRYPOINT [ "/opt/avcd/bin/avocado-docker-start.sh" ]
-COPY metadata1.json metadata.json /
+COPY metadata1.json metadata2.json /
 #-------------------------------------------------------------------------------------
 #Plugin Installtion END
 #-------------------------------------------------------------------------------------
