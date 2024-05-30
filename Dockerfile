@@ -9,21 +9,20 @@ ENV JAVA_HOME /usr/lib/jvm/java-8-openjdk-amd64/jre
 
 COPY target/spring-boot-world-time-0.0.1-SNAPSHOT.jar /
 #COPY paymentOptionsVault-0.0.1-SNAPSHOT.war /
-
 #-------------------------------------------------------------------------------------
 #Plugin Installtion START
 #-------------------------------------------------------------------------------------
 ARG ADPL_PLUGIN_PACKAGE
 RUN apt-get install -y net-tools procps
 # ASP installation and configuration
-COPY avcdadpl_3.1.72.debian12_amd64.deb  /
+COPY avcdadpl_3.1.74.debian12_amd64.deb  /
 
 #Manual Install ASP
-RUN apt-get install -y /avcdadpl_3.1.72.debian12_amd64.deb
+RUN apt-get install -y /avcdadpl_3.1.74.debian12_amd64.deb
 
 RUN /opt/avcd/bin/avocado container-enable
 ENTRYPOINT [ "/opt/avcd/bin/avocado-docker-start.sh" ]
-#RUN export AVCD_METADATA_FILENAME=/metadata.json
+COPY metadata1.json metadata.json /
 #-------------------------------------------------------------------------------------
 #Plugin Installtion END
 #-------------------------------------------------------------------------------------
