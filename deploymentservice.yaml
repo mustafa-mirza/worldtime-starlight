@@ -18,13 +18,13 @@ spec:
           imagePullPolicy: Always
           env:
           - name: ORCH_IP
-            value: "192.168.103.96"
+            value: "192.168.103.115"
           - name: ORCH_PORT
             value: "8443"
           - name: PLUGIN_ID
-            value: "1f102c17-8369-4c01-b067-63ed9adfab3a"
-          - name: CLIENT_PASSWORD
-            value: "inrKSOP@M?wJ8CMrWysPB4Km?@5_=_0oWgl?"
+            value: "74773e35-d837-413a-9449-151a78655d43"
+          - name: CLIENT_CRDS
+            value: "Lbh8WNZDeqo@8=!w1?K7ZQqJ0BnlTPG17c7J"
           - name: CONN_WEBSOCKET
             value: "true"
           - name: ENABLE_AVOCADO
@@ -42,7 +42,17 @@ spec:
           - name: AVCD_METADATA_FILENAME
             value: "/metadata1.json"
           - name: AVCD_SERVICE_TAG
-            value: worldtime-starlight
+            value: WSL-101
+          - name: IPC_USING_TCP
+            value: "false"
+          - name: SLA_PORT
+            value: "8901"
+          - name: STATS_PORT
+            value: "8902"
+          - name: POLICY_PORT
+            value: "8903"
+          - name: LOG_TO_STDOUT
+            value: "false"
           name: worldtime-debian12-root-web-container
           ports:
             - containerPort: 8080 # The port that the container is running on in the cluster
