@@ -22,9 +22,9 @@ spec:
           - name: ORCH_PORT
             value: "8443"
           - name: PLUGIN_ID
-            value: "74773e35-d837-413a-9449-151a78655d43"
+            value: "5eac1074-a374-4abf-9bf4-5fc27dcff683"
           - name: CLIENT_CRDS
-            value: "Lbh8WNZDeqo@8=!w1?K7ZQqJ0BnlTPG17c7J"
+            value: "IQ?DPnS7EXDbVxmejWr58S!yb_8FDKxp!Hzb"
           - name: CONN_WEBSOCKET
             value: "true"
           - name: ENABLE_AVOCADO
