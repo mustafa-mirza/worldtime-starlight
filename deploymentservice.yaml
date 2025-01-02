@@ -63,13 +63,13 @@ spec:
 apiVersion: v1 # Kubernetes API version
 kind: Service # Kubernetes resource kind we are creating
 metadata: # Metadata of the resource kind we are creating
-  name: worldtime-starlight-samplesvc
+  name: worldtime-starlight-samplesvc-2
 spec:
   selector:
-    app: worldtime-starlight
+    app: worldtime-starlight-2
   ports:
     - protocol: "TCP"
       port: 8080 # The port that the service is running on in the cluster
-      nodePort: 30001 # Fixed Port to access web app
+      nodePort: 30008 # Fixed Port to access web app
       targetPort: 8080 # The port exposed by the service
   type: NodePort # type of the service.
