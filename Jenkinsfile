@@ -28,14 +28,14 @@ pipeline {
                 }
             }
         }
-      //  stage('Deploy to k8s'){
-          //  steps{
-             //   script{
-              //      kubernetesDeploy (configs: 'deploymentservice.yaml',kubeconfigId: 'k8s01config')
-            //        sleep(time: 60, unit: "SECONDS")
-          //      }
-         //   }
-       // }
+        stage('Deploy to k8s'){
+            steps{
+                script{
+                    kubernetesDeploy (configs: 'deploymentservice.yaml',kubeconfigId: 'k8s01config')
+                    sleep(time: 60, unit: "SECONDS")
+                }
+            }
+        }
         
        // stage('Access First URL') {
         //    steps {
