@@ -37,15 +37,15 @@ pipeline {
             }
         }
         
-        stage('Access First URL') {
-            steps {
-                script {
-                    def firstUrl = 'http://192.168.103.101:30008'
+        // stage('Access First URL') {
+         //   steps {
+           //     script {
+             //       def firstUrl = 'http://192.168.103.101:30008'
 		    //def firstUrl = 'http://192.168.103.101:30010'
-                    sh "curl -sS $firstUrl"
-                }
-            }
-        }
+               //     sh "curl -sS $firstUrl"
+             //   }
+          //  }
+        //}
 
          stage('Generate Report'){
             steps{
