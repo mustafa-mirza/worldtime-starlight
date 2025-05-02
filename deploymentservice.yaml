@@ -1,20 +1,20 @@
 apiVersion: apps/v1
-kind: Deployment # Kubernetes resource kind we are creating
+kind: Deployment
 metadata:
   name: worldtime-starlight-deployment-2
 spec:
   selector:
     matchLabels:
-      app: worldtime-starlight
-  replicas: 1 # Number of replicas that will be created for this deployment
+      app: worldtime-starlight-2  # Updated to match service selector
+  replicas: 1
   template:
     metadata:
       labels:
-        app: worldtime-starlight
+        app: worldtime-starlight-2  # Updated to match service selector
     spec:
       containers:
         - name: spring-boot-k8s
-          image: mustafamirza/worldtime # Image that will be used to containers in the cluster
+          image: mustafamirza/worldtime
           imagePullPolicy: Always
           env:
           - name: ORCH_IP
@@ -53,23 +53,19 @@ spec:
             value: "8903"
           - name: LOG_TO_STDOUT
             value: "false"
-          name: worldtime-debian12-root-web-container
           ports:
-            - containerPort: 8080 # The port that the container is running on in the cluster
-
-
+            - containerPort: 8080
 ---
-
-apiVersion: v1 # Kubernetes API version
-kind: Service # Kubernetes resource kind we are creating
-metadata: # Metadata of the resource kind we are creating
+apiVersion: v1
+kind: Service
+metadata:
   name: worldtime-starlight-samplesvc-2
 spec:
   selector:
     app: worldtime-starlight-2
   ports:
     - protocol: "TCP"
-      port: 8080 # The port that the service is running on in the cluster
-      nodePort: 30008 # Fixed Port to access web app
-      targetPort: 8080 # The port exposed by the service
-  type: NodePort # type of the service.
+      port: 8080
+      nodePort: 30008
+      targetPort: 8080
+  type: NodePort
