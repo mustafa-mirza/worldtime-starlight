@@ -40,7 +40,7 @@ spec:
           - name: DEBUG_LOGS
             value: "true"
           - name: AVCD_METADATA_FILENAME
-            value: "/metadata1.json"
+            value: '{"user":"zhuser","PR":"c3ad83f1-7097","buildhash":"d767092ff4a5787ed2cd1703c7c7b642"}'
           - name: AVCD_SERVICE_TAG
             value: WSL-101
           - name: IPC_USING_TCP
