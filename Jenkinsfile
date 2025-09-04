@@ -1,9 +1,9 @@
 pipeline {
     agent any
-    environment {
-        ARTIFACTORY_URL = 'http://192.168.103.145:8081/artifactory'
-        REPOSITORY_NAME = '001'
-    }
+  //  environment {
+     //   ARTIFACTORY_URL = 'http://192.168.103.145:8081/artifactory'
+   //     REPOSITORY_NAME = '001'
+ //   }
     tools{
         maven 'mvn3.9.6'
     }
@@ -65,46 +65,46 @@ pipeline {
             }
         }
                
-        stage('Upload Threat Files') {
-            steps {
-                script {
-                    withCredentials([usernamePassword(
-                        credentialsId: '2c5b3acf-5069-41d3-9de0-32f760f9ee21',
-                        usernameVariable: 'ARTIFACTORY_USER',
-                        passwordVariable: 'ARTIFACTORY_API_KEY'
+    //    stage('Upload Threat Files') {
+      //      steps {
+        //        script {
+          //          withCredentials([usernamePassword(
+            //            credentialsId: '2c5b3acf-5069-41d3-9de0-32f760f9ee21',
+              //          usernameVariable: 'ARTIFACTORY_USER',
+                //        passwordVariable: 'ARTIFACTORY_API_KEY'
                     )]) {
                         // Upload AAM files
-                        sh """
-                            if ls App_model_Architecture_And_Threat_*UTC.zip >/dev/null 2>&1; then
-                                echo "📁 Found Threat files:"
-                                ls -la App_model_Architecture_And_Threat_*UTC.zip
+                  //      sh """
+                    //        if ls App_model_Architecture_And_Threat_*UTC.zip >/dev/null 2>&1; then
+                      //          echo "📁 Found Threat files:"
+                        //        ls -la App_model_Architecture_And_Threat_*UTC.zip
                                 
-                                for file in App_model_Architecture_And_Threat_*UTC.zip; do
-                                    echo "📤 Uploading: \$file"
+                          //      for file in App_model_Architecture_And_Threat_*UTC.zip; do
+                            //        echo "📤 Uploading: \$file"
                                     
-                                    # Construct URL properly with double quotes
-                                    UPLOAD_URL="${env.ARTIFACTORY_URL}/${env.REPOSITORY_NAME}/\$file"
-                                    echo "🔗 Target URL: \$UPLOAD_URL"
+                              //      # Construct URL properly with double quotes
+                                //    UPLOAD_URL="${env.ARTIFACTORY_URL}/${env.REPOSITORY_NAME}/\$file"
+                                  //  echo "🔗 Target URL: \$UPLOAD_URL"
                                     
-                                    if curl -f -v \\
-                                           -u"\${ARTIFACTORY_USER}:\${ARTIFACTORY_API_KEY}" \\
-                                           -T "\$file" \\
-                                           "\$UPLOAD_URL"; then
-                                        echo "✅ Successfully uploaded: \$file"
-                                    else
-                                        echo "❌ Failed to upload: \$file"
-                                        exit 1
-                                    fi
-                                done
-                            else
-                                echo "❌ No files matching pattern 'App_model_Architecture_And_Threat_*UTC.zip' found!"
-                                exit 1
-                            fi
-                        """
-                    }
-                }
-            }
-        }
+                                   // if curl -f -v \\
+                                     //      -u"\${ARTIFACTORY_USER}:\${ARTIFACTORY_API_KEY}" \\
+                                       //    -T "\$file" \\
+                                         //  "\$UPLOAD_URL"; then
+                                 //       echo "✅ Successfully uploaded: \$file"
+                                 //   else
+                                 //       echo "❌ Failed to upload: \$file"
+                                //        exit 1
+                               //     fi
+                             //   done
+                        //    else
+                        //        echo "❌ No files matching pattern 'App_model_Architecture_And_Threat_*UTC.zip' found!"
+                        //        exit 1
+                        //    fi
+                      //  """
+              //      }
+         //       }
+       //     }
+     //   }
     
 	// Add more stages as needed
     }
