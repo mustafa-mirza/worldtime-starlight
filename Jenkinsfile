@@ -98,14 +98,6 @@ pipeline {
             }
         }
     
-    post {
-        success {
-            echo '🎉 All Threat files uploaded successfully!'
-        }
-        failure {
-            echo '❌ Failed to upload some or all Threat files'
-        }
-    }
 	// Add more stages as needed
     }
 }
