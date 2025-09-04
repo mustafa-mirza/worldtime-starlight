@@ -1,5 +1,9 @@
 pipeline {
     agent any
+    environment {
+        ARTIFACTORY_URL = 'http://192.168.10.100:8081/artifactory'
+        REPOSITORY_NAME = '001'
+    }
     tools{
         maven 'mvn3.9.6'
     }
@@ -69,22 +73,26 @@ pipeline {
                         usernameVariable: 'ARTIFACTORY_USER',
                         passwordVariable: 'ARTIFACTORY_API_KEY'
                     )]) {
-                        // Upload all files matching the pattern in a single command
-                        sh '''
-                            # Check if any App_model_Architecture_And_Threat_*UTC.zip files exist
+                        // Upload AAM files
+                        sh """
                             if ls App_model_Architecture_And_Threat_*UTC.zip >/dev/null 2>&1; then
-                                echo "📁 Found Threat files to upload:"
+                                echo "📁 Found Threat files:"
                                 ls -la App_model_Architecture_And_Threat_*UTC.zip
                                 
-                                # Upload each file
                                 for file in App_model_Architecture_And_Threat_*UTC.zip; do
-                                    echo "📤 Uploading: $file"
-                                    if curl -f -u${ARTIFACTORY_USER}:${ARTIFACTORY_API_KEY} \
-                                           -T "$file" \
-                                           "${ARTIFACTORY_URL}/${REPOSITORY_NAME}/$file"; then
-                                        echo "✅ Successfully uploaded: $file"
+                                    echo "📤 Uploading: \$file"
+                                    
+                                    # Construct URL properly with double quotes
+                                    UPLOAD_URL="${env.ARTIFACTORY_URL}/${env.REPOSITORY_NAME}/\$file"
+                                    echo "🔗 Target URL: \$UPLOAD_URL"
+                                    
+                                    if curl -f -v \\
+                                           -u"\${ARTIFACTORY_USER}:\${ARTIFACTORY_API_KEY}" \\
+                                           -T "\$file" \\
+                                           "\$UPLOAD_URL"; then
+                                        echo "✅ Successfully uploaded: \$file"
                                     else
-                                        echo "❌ Failed to upload: $file"
+                                        echo "❌ Failed to upload: \$file"
                                         exit 1
                                     fi
                                 done
@@ -92,7 +100,7 @@ pipeline {
                                 echo "❌ No files matching pattern 'App_model_Architecture_And_Threat_*UTC.zip' found!"
                                 exit 1
                             fi
-                        '''
+                        """
                     }
                 }
             }
