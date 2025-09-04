@@ -60,6 +60,52 @@ pipeline {
                 }
             }
         }
+               
+        stage('Upload Threat Files') {
+            steps {
+                script {
+                    withCredentials([usernamePassword(
+                        credentialsId: 'artifactory-credentials',
+                        usernameVariable: 'ARTIFACTORY_USER',
+                        passwordVariable: 'ARTIFACTORY_API_KEY'
+                    )]) {
+                        // Upload all files matching the pattern in a single command
+                        sh '''
+                            # Check if any App_model_Architecture_And_Threat_*UTC.zip files exist
+                            if ls App_model_Architecture_And_Threat_*UTC.zip >/dev/null 2>&1; then
+                                echo "📁 Found Threat files to upload:"
+                                ls -la App_model_Architecture_And_Threat_*UTC.zip
+                                
+                                # Upload each file
+                                for file in App_model_Architecture_And_Threat_*UTC.zip; do
+                                    echo "📤 Uploading: $file"
+                                    if curl -f -u${ARTIFACTORY_USER}:${ARTIFACTORY_API_KEY} \
+                                           -T "$file" \
+                                           "${ARTIFACTORY_URL}/${REPOSITORY_NAME}/$file"; then
+                                        echo "✅ Successfully uploaded: $file"
+                                    else
+                                        echo "❌ Failed to upload: $file"
+                                        exit 1
+                                    fi
+                                done
+                            else
+                                echo "❌ No files matching pattern 'App_model_Architecture_And_Threat_*UTC.zip' found!"
+                                exit 1
+                            fi
+                        '''
+                    }
+                }
+            }
+        }
+    
+    post {
+        success {
+            echo '🎉 All Threat files uploaded successfully!'
+        }
+        failure {
+            echo '❌ Failed to upload some or all Threat files'
+        }
+    }
 	// Add more stages as needed
     }
 }
