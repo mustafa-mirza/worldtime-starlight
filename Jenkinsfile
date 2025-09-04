@@ -56,8 +56,8 @@ pipeline {
                 script{
                  //   sh 'python3 reportGenerator.py --fromdate "2025-05-01 00:00:01" --domain 7741_FinCorp --subdomain QA3 --reportType application_model_architecture'
 		    sh 'python3 reportGenerator.py --fromdate "2025-05-01 00:00:01" --domain 7741_FinCorp --subdomain QA3 --reportType application_model_architecture_and_threat'
-		    sh 'python3 reportGenerator.py --fromdate "2025-05-01 00:00:01" --domain 7741_FinCorp --subdomain QA3 --reportType vulnerabilities_stride_long --format pdf'
-		    sh 'python3 reportGenerator.py --fromdate "2024-02-05 11:00:00" --todate "2025-02-06 23:00:00" --domain 661_FedTrust --subdomain UAT3 --reportType application_model_threat_dragon --templateName Fedtrust_Template_20241018'
+		 //   sh 'python3 reportGenerator.py --fromdate "2025-05-01 00:00:01" --domain 7741_FinCorp --subdomain QA3 --reportType vulnerabilities_stride_long --format pdf'
+		 //   sh 'python3 reportGenerator.py --fromdate "2024-02-05 11:00:00" --todate "2025-02-06 23:00:00" --domain 661_FedTrust --subdomain UAT3 --reportType application_model_threat_dragon --templateName Fedtrust_Template_20241018'
                     // sh 'python3 reportGenerator.py --fromdate "2024-04-20 00:00:01" --domain k8s --subdomain dev_applications --reportType application_model_threat_dragon_plus'
 		//    sh 'python3 reportGenerator.py --fromdate "2024-06-09 11:00:00" --todate "2024-06-10 23:00:00" --domain k8s --subdomain dev_applications --reportType application_model_threat_dragon --templateName k8s_sentinel3 --metadataFilter "PR:0834e79e-baa6"'
 		    //sh 'python3 reportGenerator.py --fromdate "2024-05-31 11:00:00" --todate "2024-05-31 23:00:00" --domain k8s --subdomain dev_applications --reportType application_model_threat_dragon --templateName k8s_sentinel3 --metadataFilter "PR:c3ad83f1-7097"'
