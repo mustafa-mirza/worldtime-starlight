@@ -1,7 +1,7 @@
 pipeline {
     agent any
     environment {
-        ARTIFACTORY_URL = 'http://192.168.10.100:8081/artifactory'
+        ARTIFACTORY_URL = 'http://192.168.103.145:8081/artifactory'
         REPOSITORY_NAME = '001'
     }
     tools{
