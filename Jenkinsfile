@@ -69,7 +69,7 @@ pipeline {
             steps {
                 script {
                     withCredentials([usernamePassword(
-                        credentialsId: 'artifactory-credentials',
+                        credentialsId: '2c5b3acf-5069-41d3-9de0-32f760f9ee21',
                         usernameVariable: 'ARTIFACTORY_USER',
                         passwordVariable: 'ARTIFACTORY_API_KEY'
                     )]) {
