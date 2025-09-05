@@ -108,10 +108,13 @@ pipeline {
 stage('Go/NoGo Decision') {
     steps {
         script {
-            def count = sh(
-                script: 'python3 appVersionVulnerabilityCount.py --fromdate "2023-08-01 00:00:01" --todate "2025-09-05 11:11:11" --domain 7741_FinCorp --subdomain QA3',
+            def output = sh(
+                script: 'python3 appVersionVulnerabilityCount.py --fromdate "2025-08-01 00:00:01" --todate "2025-09-05 11:11:11" --domain 7741_FinCorp --subdomain QA3',
                 returnStdout: true
-            ).trim() as Integer
+            ).trim()
+            
+            def count = output as Integer
+            echo "Python script output: ${count}"
             
             if (count == 0) {
                 echo "GO: No vulnerabilities (${count})"
