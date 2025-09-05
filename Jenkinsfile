@@ -105,42 +105,39 @@ pipeline {
                 }
             }
         }
-stage('Vulnerability Check - Go/NoGo') {
-    steps {
-        script {
-            // Run the Python script and capture the console output
-            def output = sh(
-                script: 'python3 appVersionVulnerabilityCount.py  --fromdate "2025-08-01 00:00:01" --todate "2025-09-05 11:11:11" --domain 7741_FinCorp --subdomain QA3',
-                returnStdout: true
-            ).trim()
-            
-            echo "Python script output: '${output}'"
-            
-            // Try to convert the output to an integer
-            try {
-                def vulnCount = output.toInteger()
-                
-                if (vulnCount == 0) {
-                    echo "✅ GO: No vulnerabilities detected (0 vulnerabilities)"
-                    currentBuild.result = 'SUCCESS'
-                } else if (vulnCount > 0) {
-                    echo "❌ NOGO: ${vulnCount} vulnerabilities detected"
-                    currentBuild.result = 'FAILURE'
-                    error("Build failed - ${vulnCount} vulnerabilities found. Pipeline halted.")
-                } else {
-                    echo "⚠️  UNKNOWN: Negative vulnerability count: ${vulnCount}"
-                    currentBuild.result = 'FAILURE'
-                    error("Invalid vulnerability count: ${vulnCount}")
+pipeline {
+    agent any
+
+    stages {
+        stage('Check Vulnerabilities') {
+            steps {
+                script {
+                    // Run the python script and capture its output
+                    def output = sh(
+                        script: "python3 appVersionVulnerabilityCount.py --fromdate 2025-08-01 00:00:01 --todate 2025-09-05 11:11:11 --domain 7741_FinCorp --subdomain QA3",
+                        returnStdout: true
+                    ).trim()
+
+                    echo "Python script output: ${output}"
+
+                    // Convert output to integer for comparison
+                    def vulCount = output.isInteger() ? output.toInteger() : -1
+
+                    if (vulCount == 0) {
+                        echo "GO: No vulnerabilities detected (count: ${vulCount})"
+                    } else if (vulCount > 0) {
+                        echo "NOGO: Vulnerabilities detected (count: ${vulCount})"
+                        currentBuild.result = 'FAILURE'  // mark stage as failed
+                    } else {
+                        echo "NOGO: Invalid output from script"
+                        currentBuild.result = 'FAILURE'
+                    }
                 }
-                
-            } catch (NumberFormatException e) {
-                echo "⚠️  UNKNOWN: Script returned non-numeric output: '${output}'"
-                currentBuild.result = 'FAILURE'
-                error("Python script returned non-numeric output: '${output}'")
             }
         }
     }
 }
+
 	// Add more stages as needed
     }
 }
