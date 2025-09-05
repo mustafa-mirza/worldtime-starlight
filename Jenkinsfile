@@ -21,7 +21,7 @@ pipeline {
                 }
             }
         }
-        stage('Push image to Hub'){
+        stage('Push image to DockerHub'){
             steps{
                 script{
                    withCredentials([string(credentialsId: 'dockerhub-pwd', variable: 'dockerhubpwd')]) {
@@ -41,7 +41,7 @@ pipeline {
             }
         }
         
-         stage('Access First URL') {
+         stage('Application Access') {
             steps {
                 script {
                     def firstUrl = 'http://192.168.103.101:30008'
@@ -51,7 +51,7 @@ pipeline {
             }
         }
 
-         stage('Generate Report'){
+         stage('Generate Threat Model Reports'){
             steps{
                 script{
                  //   sh 'python3 reportGenerator.py --fromdate "2025-05-01 00:00:01" --domain 7741_FinCorp --subdomain QA3 --reportType application_model_architecture'
@@ -65,7 +65,7 @@ pipeline {
             }
         }
                
-        stage('Upload Threat Files') {
+        stage('Upload Threat Models to Artifactory') {
             steps {
                 script {
                     withCredentials([usernamePassword(
