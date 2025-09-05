@@ -105,7 +105,33 @@ pipeline {
                 }
             }
         }
-    
+        stage('Vulnerability Check - Go/NoGo') {
+            steps {
+                script {
+                    // Run the Python script and capture the return code
+                    def returnCode = sh(
+                        script: 'python3 appVersionVulnerabilityCount.py --fromdate "2025-08-01 00:00:01" --todate "2025-09-05 11:11:11"  --domain 7741_FinCorp --subdomain QA3',
+                        returnStatus: true
+                    )
+                    
+                    echo "Python script return code: ${returnCode}"
+                    
+                    // Check the return code and set the build result accordingly
+                    if (returnCode == 0) {
+                        echo "GO: No vulnerabilities detected (return code: 0)"
+                        currentBuild.result = 'SUCCESS'
+                    } else if (returnCode > 0) {
+                        echo "NOGO: Vulnerabilities detected (return code: ${returnCode})"
+                        currentBuild.result = 'FAILURE'
+                        error("Build failed due to vulnerabilities detected. Return code: ${returnCode}")
+                    } else {
+                        echo "UNKNOWN: Unexpected negative return code: ${returnCode}"
+                        currentBuild.result = 'FAILURE'
+                        error("Unexpected error from Python script. Return code: ${returnCode}")
+                    }
+                }
+            }
+        }    
 	// Add more stages as needed
     }
 }
