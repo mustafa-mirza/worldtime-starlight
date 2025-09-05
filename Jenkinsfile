@@ -105,24 +105,38 @@ pipeline {
                 }
             }
         }
-stage('Go/NoGo Decision') {
+stage('Vulnerability Check - Go/NoGo') {
     steps {
         script {
+            // Run the Python script and capture the console output
             def output = sh(
-                script: 'python3 appVersionVulnerabilityCount.py --fromdate "2025-08-01 00:00:01" --todate "2025-09-05 11:11:11" --domain 7741_FinCorp --subdomain QA3',
+                script: 'python3 appVersionVulnerabilityCount.py  --fromdate "2025-08-01 00:00:01" --todate "2025-09-05 11:11:11" --domain 7741_FinCorp --subdomain QA3',
                 returnStdout: true
             ).trim()
             
-            def count = output as Integer
-            echo "Python script output: ${count}"
+            echo "Python script output: '${output}'"
             
-            if (count == 0) {
-                echo "GO: No vulnerabilities (${count})"
-                env.GO_NOGO_DECISION = 'GO'
-            } else {
-                echo "NoGO: ${count} vulnerabilities found"
-                env.GO_NOGO_DECISION = 'NoGO'
-                error("Build stopped: ${count} vulnerabilities detected")
+            // Try to convert the output to an integer
+            try {
+                def vulnCount = output.toInteger()
+                
+                if (vulnCount == 0) {
+                    echo "✅ GO: No vulnerabilities detected (0 vulnerabilities)"
+                    currentBuild.result = 'SUCCESS'
+                } else if (vulnCount > 0) {
+                    echo "❌ NOGO: ${vulnCount} vulnerabilities detected"
+                    currentBuild.result = 'FAILURE'
+                    error("Build failed - ${vulnCount} vulnerabilities found. Pipeline halted.")
+                } else {
+                    echo "⚠️  UNKNOWN: Negative vulnerability count: ${vulnCount}"
+                    currentBuild.result = 'FAILURE'
+                    error("Invalid vulnerability count: ${vulnCount}")
+                }
+                
+            } catch (NumberFormatException e) {
+                echo "⚠️  UNKNOWN: Script returned non-numeric output: '${output}'"
+                currentBuild.result = 'FAILURE'
+                error("Python script returned non-numeric output: '${output}'")
             }
         }
     }
