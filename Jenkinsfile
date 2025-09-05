@@ -105,33 +105,25 @@ pipeline {
                 }
             }
         }
-        stage('Vulnerability Check - Go/NoGo') {
-            steps {
-                script {
-                    // Run the Python script and capture the return code
-                    def returnCode = sh(
-                        script: 'python3 appVersionVulnerabilityCount.py --fromdate "2025-08-01 00:00:01" --todate "2025-09-05 11:11:11"  --domain 7741_FinCorp --subdomain QA3',
-                        returnStatus: true
-                    )
-                    
-                    echo "Python script return code: ${returnCode}"
-                    
-                    // Check the return code and set the build result accordingly
-                    if (returnCode == 0) {
-                        echo "GO: No vulnerabilities detected (return code: 0)"
-                        currentBuild.result = 'SUCCESS'
-                    } else if (returnCode > 0) {
-                        echo "NOGO: Vulnerabilities detected (return code: ${returnCode})"
-                        currentBuild.result = 'FAILURE'
-                        error("Build failed due to vulnerabilities detected. Return code: ${returnCode}")
-                    } else {
-                        echo "UNKNOWN: Unexpected negative return code: ${returnCode}"
-                        currentBuild.result = 'FAILURE'
-                        error("Unexpected error from Python script. Return code: ${returnCode}")
-                    }
-                }
+stage('Go/NoGo Decision') {
+    steps {
+        script {
+            def count = sh(
+                script: 'python3 appVersionVulnerabilityCount.py --fromdate "2023-08-01 00:00:01" --todate "2025-09-05 11:11:11" --domain 7741_FinCorp --subdomain QA3',
+                returnStdout: true
+            ).trim() as Integer
+            
+            if (count == 0) {
+                echo "GO: No vulnerabilities (${count})"
+                env.GO_NOGO_DECISION = 'GO'
+            } else {
+                echo "NoGO: ${count} vulnerabilities found"
+                env.GO_NOGO_DECISION = 'NoGO'
+                error("Build stopped: ${count} vulnerabilities detected")
             }
-        }    
+        }
+    }
+}
 	// Add more stages as needed
     }
 }
