@@ -1,7 +1,7 @@
 pipeline {
     agent any
 	parameters {
-        string(name: 'MAX_VULN_COUNT', defaultValue: '90', description: 'Maximum allowed vulnerability count')
+        string(name: 'MAX_VULN_COUNT', defaultValue: '80', description: 'Maximum allowed vulnerability count')
     }
     environment {
         ARTIFACTORY_URL = 'http://192.168.103.145:8081/artifactory'
