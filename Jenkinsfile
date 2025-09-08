@@ -111,7 +111,7 @@ pipeline {
                 script {
                     // Capture Critical and High Vulnerability count
                     def output = sh(
-                        script: "python3 appVersionVulnerabilityCount.py --fromdate 2025-08-01 00:00:01 --todate 2025-09-05 11:11:11 --domain 7741_FinCorp --subdomain QA3",
+                        script: """python3 appVersionVulnerabilityCount.py --fromdate "2025-08-01 00:00:01" --todate "2025-09-08 11:11:11" --domain 7741_FinCorp --subdomain QA3""",
                         returnStdout: true
                     ).trim()
 
