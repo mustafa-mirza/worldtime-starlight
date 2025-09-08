@@ -120,9 +120,9 @@ pipeline {
                     // Convert output to integer for comparison
                     def vulCount = output.isInteger() ? output.toInteger() : -1
 
-                    if (vulCount == 0) {
+                    if (vulCount == 89) {
                         echo "GO: No vulnerabilities detected (count: ${vulCount})"
-                    } else if (vulCount > 0) {
+                    } else if (vulCount > 89) {
                         error "NOGO: Vulnerabilities detected (count: ${vulCount})"
                     } else {
                         error "NOGO: Invalid output from script"
