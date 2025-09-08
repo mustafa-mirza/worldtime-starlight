@@ -106,32 +106,32 @@ pipeline {
             }
         }
 
-stage('Vulnerability Check - Go/NoGo') {
-    steps {
-        script {
-            // Capture the output
-            def output = sh(returnStdout: true, script: '''
-                python3 appVersionVulnerabilityCount.py \
-                --fromdate "2025-08-01 00:00:01" \
-                --todate "2025-09-05 11:11:11" \
-                --domain 7741_FinCorp \
-                --subdomain QA3
-            ''').trim()
-            
-            echo "Raw output: ${output}"
-            
-            // Get the last line (the vulnerability count)
-            def vulnCount = output.readLines().last().trim().toInteger()
-            
-            if (vulnCount > 0) {
-                error("NOGO: ${vulnCount} vulnerabilities detected. Build cannot proceed.")
-            } else {
-                echo "GO: No vulnerabilities detected. Proceeding with build."
+        stage('Check Vulnerabilities') {
+            steps {
+                script {
+                    // Capture Critical and High Vulnerability count
+                    def output = sh(
+                        script: "python3 appVersionVulnerabilityCount.py --fromdate 2025-08-01 00:00:01 --todate 2025-09-05 11:11:11 --domain 7741_FinCorp --subdomain QA3",
+                        returnStdout: true
+                    ).trim()
+
+                    echo "Vulnerability script output: ${output}"
+
+                    // Convert output to integer for comparison
+                    def vulCount = output.isInteger() ? output.toInteger() : -1
+
+                    if (vulCount == 0) {
+                        echo "GO: No vulnerabilities detected (count: ${vulCount})"
+                    } else if (vulCount > 0) {
+                        error "NOGO: Vulnerabilities detected (count: ${vulCount})"
+                    } else {
+                        error "NOGO: Invalid output from script"
+                    }
+                }
             }
         }
     }
 }
-
 	// Add more stages as needed
     }
 }
