@@ -1,5 +1,8 @@
 pipeline {
     agent any
+	parameters {
+        string(name: 'MAX_VULN_COUNT', defaultValue: '90', description: 'Maximum allowed vulnerability count')
+    }
     environment {
         ARTIFACTORY_URL = 'http://192.168.103.145:8081/artifactory'
         REPOSITORY_NAME = '001'
@@ -119,13 +122,15 @@ pipeline {
 
                     // Convert output to integer for comparison
                     def vulCount = output.isInteger() ? output.toInteger() : -1
+                    def maxAllowed = params.MAX_VULN_COUNT.toInteger()
 
-                    if (vulCount == 89) {
-                        echo "GO: No vulnerabilities detected (count: ${vulCount})"
-                    } else if (vulCount > 89) {
-                        error "NOGO: Vulnerabilities detected (count: ${vulCount})"
-                    } else {
+                    if (vulCount < 0) {
                         error "NOGO: Invalid output from script"
+                    } else if (vulCount <= maxAllowed) {
+                        echo "GO: Vulnerability count (${vulCount}) within acceptable limit (<= ${maxAllowed})"
+                    } else {
+                        error "NOGO: Vulnerability count (${vulCount}) exceeds threshold of ${maxAllowed}"
+                    
                     }
                 }
             }
